@@ -9,8 +9,8 @@ My Book on Ionic - https://www.amazon.com/Getting-Started-Ionic-Rahat-Khanna/dp/
 A Repository to help you learn Ionic in a very easy and Practical way with lots of examples.
 
 ## Table of Contents
-1. Setting Up Ionic Environment
-2. Developing HelloWorld App
+1. [Setting Up Ionic Environment](https://github.com/mappmechanic/learning-ionic#setting-up-ionic-environment)
+2. [Developing HelloWorld App](https://github.com/mappmechanic/learning-ionic#developing-helloworld-app)
 
 ## Code Samples with Steps :
 
@@ -48,3 +48,22 @@ Now, you have to go inside the *hello* folder using following command.
 The folder structure of our Ionic app started with *blank* template is as given below:
 
 <img src="https://raw.githubusercontent.com/mappmechanic/learning-ionic/master/readme-imgs/folder-structure.png" data-canonical-src="https://raw.githubusercontent.com/mappmechanic/learning-ionic/master/readme-imgs/folder-structure.png" width="184" height="330" />
+
+#### *Step 3:*
+From the command prompt or terminal, please run the following command:
+
+`npm install`
+
+#### *Step 4:*
+From the command prompt or terminal, please run the following command:
+
+`npm install`
+
+#### *Step 5:*
+We will use the ionic serve command to run a local web-server to see the output of our app
+
+`ionic serve`
+
+Now we will be able to see the HelloWorld App example using a browser. We can use Chrome Devtools to open it in any device size.
+
+<img src="https://raw.githubusercontent.com/mappmechanic/learning-ionic/master/readme-imgs/helloworld.png" data-canonical-src="https://raw.githubusercontent.com/mappmechanic/learning-ionic/master/readme-imgs/helloworld.png" />
