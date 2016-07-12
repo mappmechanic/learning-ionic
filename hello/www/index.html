@@ -20,15 +20,18 @@
 
     <!-- your app's js -->
     <script src="js/app.js"></script>
+	<script src="js/home/HomeCtrl.js"></script>
+	<script src="js/examples/examplesModule.js"></script>
+	<script src="js/examples/examplesCtrl.js"></script>
+	<script src="js/author/authorModule.js"></script>
+	<script src="js/author/authorCtrl.js"></script>
   </head>
-  <body ng-app="starter">
-    <ion-pane>
-      <ion-header-bar class="bar-stable">
-        <h1 class="title">Ionic Blank Starter</h1>
-      </ion-header-bar>
-      <ion-content>
-		  <h2>HelloWorld</h2>
-      </ion-content>
-    </ion-pane>
+  <body ng-app="learningIonic">
+	  <ion-nav-bar class="bar-positive">
+        <ion-nav-back-button>
+        </ion-nav-back-button>
+      </ion-nav-bar>
+	  <ion-nav-view>
+	  </ion-nav-view>
   </body>
 </html>

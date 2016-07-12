@@ -1,0 +1,11 @@
+<ion-view view-title="Examples">
+  <ion-content class="">
+	<ion-list>
+		<ion-item class="item-icon-left item-icon-right" ng-repeat="example in examples track by index">
+			 <i class="icon {{example.icon}}"></i>
+			{{example.name}}
+			<i class="icon ion-chevron-right"></i>
+		</ion-item>
+	</ion-list>
+  </ion-content>
+</ion-view>
