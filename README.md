@@ -47,4 +47,4 @@ Now, you have to go inside the *hello* folder using following command.
 
 The folder structure of our Ionic app started with *blank* template is as given below:
 
-<img src="https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png" data-canonical-src="https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png" width="308" height="5502" />
+<img src="https://raw.githubusercontent.com/mappmechanic/learning-ionic/master/readme-imgs/folder-structure.png" data-canonical-src="https://raw.githubusercontent.com/mappmechanic/learning-ionic/master/readme-imgs/folder-structure.png" width="184" height="330" />
