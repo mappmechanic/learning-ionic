@@ -1,0 +1,25 @@
+<div class="question">
+	<div ng-switch="type">
+		<div ng-switch-when="text-input">
+			<div class="list">
+			  <label class="item item-input {{options.style}}">
+			    <span class="input-label">{{options.label}}</span>
+			    <input type="text" placeholder="{{options.placeholder}}" ng-model="response.value">
+			  </label>
+			</div>
+		</div>
+		<div ng-switch-when="singlechoice">
+			<ion-list>
+				<div class="item item-divider">
+					{{ options.question }}
+				</div>
+				<ion-radio
+					ng-repeat="choice in options.choices track by $index"
+					ng-model="response.value"
+					ng-value="choice">
+					{{choice}}
+				</ion-radio>
+			</ion-list>
+		</div>
+	</div>
+</div>

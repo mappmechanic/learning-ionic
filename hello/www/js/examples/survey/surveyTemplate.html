@@ -1,0 +1,30 @@
+<ion-view view-title="Multi Step Survey">
+  <ion-content class="">
+
+	<div ng-if="survey.steps.length > 1" class="list card">
+		<div class="button-bar bar-dark">
+  		  <a ng-repeat="step in survey.steps"
+			ng-click="goToStep($index)"
+			ng-class="{'button':true,'active':step.active}">
+			  Step {{$index+1}}
+		  </a>
+  		</div>
+	</div>
+	<div ng-if="step.active" ng-repeat="step in survey.steps" class="list card">
+		<div class="item item-divider">
+			{{step.title}}
+		</div>
+		<ion-item ng-repeat="question in step.questions track by $index">
+			<question
+				type="{{question.type}}"
+				options="question.options"
+				response="question.response">
+			</question>
+		</ion-item>
+	</div>
+	<div class="padding">
+		<div ng-if="!lastStepActive" class="button button-block button-balanced"> Continue </div>
+		<div ng-if="lastStepActive" class="button button-block button-assertive"> Submit </div>
+	</div>
+  </ion-content>
+</ion-view>

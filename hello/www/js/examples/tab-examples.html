@@ -1,7 +1,7 @@
 <ion-view view-title="Examples">
   <ion-content class="">
 	<ion-list>
-		<ion-item class="item-icon-left item-icon-right" ng-repeat="example in examples track by index">
+		<ion-item ui-sref="{{example.link}}" class="item-icon-left item-icon-right" ng-repeat="example in examples track by index">
 			 <i class="icon {{example.icon}}"></i>
 			{{example.name}}
 			<i class="icon ion-chevron-right"></i>
