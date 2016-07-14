@@ -1,7 +1,7 @@
 <ion-view view-title="Multi Step Survey">
   <ion-content class="">
 
-	<div ng-if="survey.steps.length > 1" class="list card">
+	<div ng-if="survey.steps.length > 1 && currentActiveStep > -1" class="list card">
 		<div class="button-bar bar-dark">
   		  <a ng-repeat="step in survey.steps"
 			ng-click="goToStep($index)"
@@ -14,17 +14,28 @@
 		<div class="item item-divider">
 			{{step.title}}
 		</div>
-		<ion-item ng-repeat="question in step.questions track by $index">
-			<question
-				type="{{question.type}}"
-				options="question.options"
-				response="question.response">
-			</question>
-		</ion-item>
+		<form name="step{{$index+1}}">
+			<ion-item ng-repeat="question in step.questions track by $index">
+				<question
+					type="{{question.type}}"
+					options="question.options"
+					response="question.response"
+					no="{{index+1}}">
+				</question>
+			</ion-item>
+		</form>
 	</div>
-	<div class="padding">
-		<div ng-if="!lastStepActive" class="button button-block button-balanced"> Continue </div>
-		<div ng-if="lastStepActive" class="button button-block button-assertive"> Submit </div>
+	<div ng-if="currentActiveStep === -1" class="list card">
+		<div ng-repeat="step in responses" class="list">
+			<div class="item item-divider">{{step.step}}</div>
+			<div ng-repeat="response in step.responses" class="item">
+				{{response.question}} - {{response.response}}
+			</div>
+		</div>
+	</div>
+	<div ng-if="currentActiveStep > -1" class="padding">
+		<div ng-if="!lastStepActive" class="button button-block button-balanced" ng-click="continue()"> Continue </div>
+		<div ng-if="lastStepActive" class="button button-block button-assertive" ng-click="submit()"> Submit </div>
 	</div>
   </ion-content>
 </ion-view>

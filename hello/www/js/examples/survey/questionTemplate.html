@@ -3,8 +3,16 @@
 		<div ng-switch-when="text-input">
 			<div class="list">
 			  <label class="item item-input {{options.style}}">
-			    <span class="input-label">{{options.label}}</span>
-			    <input type="text" placeholder="{{options.placeholder}}" ng-model="response.value">
+				  <ng-form name="QuestionForm">
+				    <span class="input-label">
+						{{options.label}}
+					</span>
+				    <input type="text" name="InputElement" placeholder="{{options.placeholder}}" required ng-model="response.value">
+					<span class="error-message"
+					ng-show="QuestionForm.InputElement.$touched && QuestionForm.InputElement.$error.required">
+						*It is a required field.
+					</span>
+				  </ng-form>
 			  </label>
 			</div>
 		</div>
@@ -20,6 +28,30 @@
 					{{choice}}
 				</ion-radio>
 			</ion-list>
+		</div>
+		<div ng-switch-when="multichoice">
+			<ion-list>
+				<div class="item item-divider">
+					{{ options.question }}
+				</div>
+				<ion-checkbox
+					ng-repeat="choice in options.choices track by $index"
+					ng-model="choice.selected"
+					ng-change="updateChoice($index)">
+					{{choice.display}}
+				</ion-checkbox>
+			</ion-list>
+		</div>
+		<div ng-switch-when="range">
+			<div class="item item-divider">
+				{{options.question}}
+			</div>
+			<div class="item range range-balanced">
+	            <i class="icon ion-ios-bolt-outline"></i>
+	            	<input type="range" name="volume" min="{{options.min}}" max="{{options.max}}" ng-model="response.value">
+	            <i class="icon ion-ios-bolt"></i>
+				{{response.value}}
+        	</div>
 		</div>
 	</div>
 </div>
