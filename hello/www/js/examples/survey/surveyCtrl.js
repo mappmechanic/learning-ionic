@@ -74,30 +74,17 @@ angular.module('survey')
 	$scope.currentActiveStep = 0;
 	$scope.responses = [];
 	$scope.goToStep = function(index){
-		debugger;
-		if($scope.validateForm(index)){
-			for(var i=0;i<$scope.survey.steps.length;i++)
-			{
-				$scope.survey.steps[i].active = i === index ? true : false;
-			}
-			$scope.lastStepActive = (index === $scope.survey.steps.length -1) ? true : false;
-			$scope.currentActiveStep = index;
+		for(var i=0;i<$scope.survey.steps.length;i++)
+		{
+			$scope.survey.steps[i].active = i === index ? true : false;
 		}
+		$scope.lastStepActive = (index === $scope.survey.steps.length -1) ? true : false;
+		$scope.currentActiveStep = index;
 	}
 
 	$scope.continue = function(){
 		$scope.goToStep($scope.currentActiveStep+1);
 		$ionicScrollDelegate.scrollTop();
-	}
-
-	$scope.validateForm = function(step){
-		// step = 'step'+step;
-		// if($scope[step].$valid){
-		// 	return true;
-		// }else {
-		// 	$scope.errorMessage = step + ' is invalid.';
-		// }
-		return true;
 	}
 
 	$scope.submit = function(){

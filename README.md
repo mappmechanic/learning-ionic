@@ -11,7 +11,8 @@ A Repository to help you learn Ionic in a very easy and Practical way with lots 
 ## Table of Contents
 1. [Setting Up Ionic Environment](https://github.com/mappmechanic/learning-ionic#setting-up-ionic-environment)
 2. [Developing HelloWorld App](https://github.com/mappmechanic/learning-ionic#developing-helloworld-app)
-3. [Tabs & States in Ionic App]
+3. [Tabs & States in Ionic App](https://github.com/mappmechanic/learning-ionic#tabs--states-in-ionic-apps)
+4. [Multi Step Form & Validations]
 
 ## Code Samples with Steps :
 
@@ -295,3 +296,364 @@ Also, one last thing that we need to inject *home* module as a dependency to our
 `angular.module('learningIonic', ['ionic','home','examples','author']`
 
 Run the command *ionic serve* to see the output of author view by clicking on author tab on bottom tab bar.
+
+### Multi Step Form & Validations
+
+In this example we will create a small module to render multi step dynamic form which will be driven using a JSON object. We will mention the type of question/input and then have some properties defined to render it. We will record the responses in the same object and extract them in the last. We will implement 2 types of validation - CSS based and FormController/NgModelController based.
+
+#### *Step 1:*
+We have to make new folder named *survey* in our examples folder. We will make nested feature folders now.
+
+Now we have to create a new file *surveyModule.js* inside survey folder to declare a new module named *survey* with the following code:
+
+```javascript
+	angular.module('survey',[])
+
+	.run([function(){
+
+	}])
+
+	.config([function(){
+
+	}])
+```
+
+Also, create 2 new blank files *surveyCtrl.js* and *surveyTemlate.html*.
+
+Now, firstly we have to create a new route for our *survey* example.
+
+In the *config* block of the module definition present in file *examplesModule.js*, please replace the config block with the following code:
+
+```javascript
+.config(['$stateProvider',function($stateProvider){
+	$stateProvider
+	.state('tab.survey', {
+      url: '/examples/survey',
+      views: {
+        'tab-examples': {
+          templateUrl: 'js/examples/survey/surveyTemplate.html',
+          controller: 'SurveyCtrl'
+        }
+      }
+    })
+}])
+```
+
+Also, in *examplesCtrl.js*, modify the first element of examples array to match the following code:
+
+```javascript
+$scope.examples = [
+	{
+		name:'Survey Example',
+		descr:'It contains an example of Multi Step Forms with validation.',
+		icon:'ion-ios-paper',
+		link:'tab.survey'
+	}
+]
+```
+
+Now, we have to inject all dependencies in index.html after all other script tags injections.
+
+```
+<!-- Survey Example Module -->    
+<script src="js/examples/survey/surveyModule.js"></script>   
+<script src="js/examples/survey/surveyCtrl.js"></script>    
+<script src="js/examples/survey/questionDirective.js"></script>    
+```
+
+#### *Step 2:*
+Now, we will be adding code in *surveyTemplate.html* and *surveyCtrl.js* to implement the multi step form rendering.
+
+Now, we should add the following code to *surveyTemplate.html*:
+
+```
+<ion-view view-title="Multi Step Survey">    
+  <ion-content class="">    
+
+	<div ng-if="survey.steps.length > 1 && currentActiveStep > -1" class="list card">     
+		<div class="button-bar bar-dark">    
+  		  <a ng-repeat="step in survey.steps"    
+			ng-click="goToStep($index)"      
+			ng-class="{'button':true,'active':step.active}">    
+			  Step {{$index+1}}   
+		  </a>   
+  		</div>    
+	</div>   
+	<div ng-if="step.active" ng-repeat="step in survey.steps" class="list card">    
+		<div class="item item-divider">    
+			{{step.title}}   
+		</div>   
+		<form name="step{{$index+1}}">   
+			<ion-item ng-repeat="question in step.questions track by $index">   
+				<question   
+					type="{{question.type}}"    
+					options="question.options"   
+					response="question.response"   
+					no="{{index+1}}">    
+				</question>    
+			</ion-item>   
+		</form>   
+	</div>   
+	<div ng-if="currentActiveStep === -1" class="list card">   
+		<div ng-repeat="step in responses" class="list">   
+			<div class="item item-divider">{{step.step}}</div>   
+			<div ng-repeat="response in step.responses" class="item">   
+				{{response.question}} - {{response.response}}   
+			</div>   
+		</div>    
+	</div>     
+	<div ng-if="currentActiveStep > -1" class="padding">
+		<div ng-if="!lastStepActive" class="button button-block button-balanced" ng-click="continue()"> Continue </div>    
+ 		<div ng-if="lastStepActive" class="button button-block button-assertive" ng-click="submit()"> Submit </div>    
+	</div>    
+  </ion-content>     
+</ion-view>   
+```
+
+Now, we should add the following code to *surveyCtrl.js*:
+
+```javascript
+angular.module('survey')
+
+.controller('SurveyCtrl',['$scope','$ionicScrollDelegate',function($scope,$ionicScrollDelegate) {
+	$scope.survey = {
+		steps:[
+				{
+				title:'Trainer Feedback',
+				active:true,
+				questions:[
+							{
+								type:"text-input",
+								options:{
+									label:"Trainer Name",
+									placeholder:"Enter Name of Trainer",
+									style:"item-stacked-label"
+								}
+							},
+							{
+								type:"singlechoice",
+								options:{
+									question:"What is the level of this Tutorial?",
+									choices:["Good","Very Good","Excellent","Out of this world!"]
+								}
+							},
+							{
+								type:"range",
+								options:{
+									question:"Give Rating out of 1 to 10 for Trainer",
+									max:10,
+									min:1
+								},
+								response:{
+									value:10
+								}
+							}
+					]
+				},
+				{
+				title:'Content Feedback',
+				active:false,
+				questions:[
+							{
+								type:"text-input",
+								options:{
+									label:"Topic Name",
+									placeholder:"Enter the Topic for the Session",
+									style:"item-stacked-label"
+								}
+							},
+							{
+								type:"multichoice",
+								options:{
+									question:"What all you covered?",
+									choices:[
+										{selected:false,display:"Theory"},
+										{selected:false,display:"Code Demos"},
+										{selected:false,display:"HandsOn Coding"}
+									],
+									style:"item-stacked-label"
+								}
+							},
+							{
+								type:"singlechoice",
+								options:{
+									question:"How was the content organized?",
+									choices:["Covered Everything","Good Coverage","Ok Content","Very Bad Content"]
+								}
+							}
+					]
+				}
+			]
+		}
+	$scope.lastStepActive = false;
+	$scope.currentActiveStep = 0;
+	$scope.responses = [];
+	$scope.goToStep = function(index){
+		for(var i=0;i<$scope.survey.steps.length;i++)
+		{
+			$scope.survey.steps[i].active = i === index ? true : false;
+		}
+		$scope.lastStepActive = (index === $scope.survey.steps.length -1) ? true : false;
+		$scope.currentActiveStep = index;
+	}
+
+	$scope.continue = function(){
+		$scope.goToStep($scope.currentActiveStep+1);
+		$ionicScrollDelegate.scrollTop();
+	}
+
+	$scope.submit = function(){
+		$scope.goToStep(-1);
+		$scope.responses = $scope.survey.steps.map(function(step,stepIndex){
+			var questionResponses = step.questions.map(function(question,quesIndex){
+				var respObj = {
+					question: 'Question'+(quesIndex+1),
+					response:question.response.value
+				}
+				return respObj;
+			});
+			return {
+				step:'Step'+(stepIndex+1),
+				responses:questionResponses
+			}
+		});
+		$ionicScrollDelegate.scrollTop();gm
+	}
+}]);
+```
+
+#### *Step 3:*
+Now, we have to create a new directive for rendering all question types. Please create one file *questionDirective.js* and put the following code there:
+
+```javascript
+angular.module('survey')
+
+.directive('question',[function(){
+	return {
+		scope:{
+			type:'@',
+			options:'=',
+			response:'=',
+			no:'@'
+		},
+		link:function($scope,$element,$attrs){
+		},
+		restrict:'E',
+		templateUrl:'js/examples/survey/questionTemplate.html',
+		controller:questionCtrl
+	}
+}]);
+
+function questionCtrl($scope){
+	if(!$scope.response){
+		$scope.response = {
+			value:'',
+			timeTaken:0
+		}
+	}
+
+	$scope.updateChoice = function(index){
+		var selectedChoices = $scope.options.choices.filter(function(choice){
+			return choice.selected === true;
+		});
+		selectedChoices = selectedChoices.map(function(choice){ return choice.display });
+		$scope.response.value = selectedChoices;
+	}
+}
+
+questionCtrl.$inject = ['$scope'];
+```
+
+Now, we will create the template for it as a new file *questionTemplate.html*:
+
+```
+<div class="question">    
+	<div ng-switch="type">    
+		<div ng-switch-when="text-input">     
+			<div class="list">    
+			  <label class="item item-input {{options.style}}">    
+				  <ng-form name="QuestionForm">    
+				    <span class="input-label">     
+						{{options.label}}    
+					</span>    
+				    <input type="text" name="InputElement" placeholder="{{options.placeholder}}" required ng-model="response.value">     
+					<span class="error-message"
+					ng-show="QuestionForm.InputElement.$touched && QuestionForm.InputElement.$error.required">     
+						*It is a required field.    
+					</span>     
+				  </ng-form>    
+			  </label>     
+			</div>     
+		</div>    
+		<div ng-switch-when="singlechoice">     
+			<ion-list>    
+				<div class="item item-divider">    
+					{{ options.question }}    
+				</div>     
+				<ion-radio   
+					ng-repeat="choice in options.choices track by $index"    
+					ng-model="response.value"    
+					ng-value="choice">    
+					{{choice}}    
+				</ion-radio>   
+			</ion-list>    
+		</div>   
+		<div ng-switch-when="multichoice">    
+			<ion-list>    
+				<div class="item item-divider">     
+					{{ options.question }}    
+				</div>    
+				<ion-checkbox    
+					ng-repeat="choice in options.choices track by $index"    
+					ng-model="choice.selected"    
+					ng-change="updateChoice($index)">    
+					{{choice.display}}   
+				</ion-checkbox>    
+			</ion-list>   
+		</div>   
+		<div ng-switch-when="range">    
+			<div class="item item-divider">   
+				{{options.question}}   
+			</div>   
+			<div class="item range range-balanced">    
+	            <i class="icon ion-ios-bolt-outline"></i>    
+	            	<input type="range" name="volume" min="{{options.min}}" max="{{options.max}}" ng-model="response.value">    
+	            <i class="icon ion-ios-bolt"></i>    
+				{{response.value}}    
+        	</div>    
+		</div>    
+	</div>   
+</div>    
+```
+
+#### *Step 4:*
+
+Now we will implement code for validations and error messages. We can notify the user about the validation errors in two ways:
+
+1. Using CSS, angular automatically adds css classes to invalid forms. Add the following css in *css/style.css* file.
+
+```
+input.ng-touched.ng-invalid{    
+	border:1px solid red;    
+	background:#FBEFF2;   
+}    
+```
+
+2. We can also use FormController & NgModelController to check special flags on the controller instance for any input element.
+
+Add the following directive to *surveyModule.js* file:
+
+```javascript
+.directive("errorMessage", function() {
+    return {
+        restrict: 'E',
+        transclude: true,
+        replace: true,
+        scope:{
+            name: '@',
+            error: '@'
+        },
+        template: '<div><p ng-show="$parent.{{name}}.$dirty">Dirty</p><p ng-show="$parent.{{name}}.$error.{{error}}"><span ng-transclude></span></p></div>'
+    };
+});
+```
