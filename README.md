@@ -12,7 +12,7 @@ A Repository to help you learn Ionic in a very easy and Practical way with lots 
 1. [Setting Up Ionic Environment](https://github.com/mappmechanic/learning-ionic#setting-up-ionic-environment)
 2. [Developing HelloWorld App](https://github.com/mappmechanic/learning-ionic#developing-helloworld-app)
 3. [Tabs & States in Ionic App](https://github.com/mappmechanic/learning-ionic#tabs--states-in-ionic-apps)
-4. [Multi Step Form & Validations]
+4. [Multi Step Form & Validations](https://github.com/mappmechanic/learning-ionic#multi-step-form--validations)
 
 ## Code Samples with Steps :
 
