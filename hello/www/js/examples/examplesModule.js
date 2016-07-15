@@ -15,4 +15,13 @@ angular.module('examples',['survey'])
         }
       }
     })
+	.state('tab.map', {
+      url: '/examples/map',
+      views: {
+        'tab-examples': {
+          templateUrl: 'js/examples/map/mapTemplate.html',
+          controller: 'MapCtrl'
+        }
+      }
+    })
 }])
