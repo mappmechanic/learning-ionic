@@ -657,3 +657,75 @@ Add the following directive to *surveyModule.js* file:
     };
 });
 ```
+
+### Device Features - ngCordova & Compose Email Basic
+
+In Ionic, we can use native device plugins of Cordova using a special library called ngCordova which encapsulates all cordova calls in Angular services which can be called easily in Ionic.
+
+#### *Step 1:*
+We have to add *ngCordova* library to our Ionic project.
+
+Either download the ngCordova library using github or install it using bower with following command from inside *hello* folder:
+
+`bower install ngCordova --save`
+
+#### *Step 2:*
+Now, we have to include the reference of ngCordova file in our *index.html* just before *cordova.js* script injection.
+
+`<script src="lib/ngCordova/dist/ng-cordova.js"></script>`
+
+Also, we have to inject *'ngCordova'* dependency into the DI list for our root module in *app.js* file:
+
+`angular.module('learningIonic', ['ionic','home','examples','author','ngCordova'])`
+
+#### *Step 3:*
+We will be adding the new cordova plugin for sending email and then use its ngCordova method to send the survey response JSON as email.
+
+In order to add a cordova plugin, type following command in command prompt:
+
+`cordova plugin add https://github.com/katzer/cordova-plugin-email-composer.git`
+
+We have to now, add the functionality in *surveyCtrl.js* file:
+
+```javascript
+$scope.sendEmail = function(){
+	$cordovaEmailComposer.isAvailable().then(function() {
+		var email = {
+			 to: 'yehtechnologies@gmail.com',
+			 cc: 'rahat.khanna@yahoo.co.in',
+			 bcc: ['rahat.khanna@flipkart.com'],
+			 attachments: [],
+			 subject: 'Survey Result',
+			 body: document.getElementById('surveyResponse').innerHTML,
+			 isHtml: true
+		   };
+
+		  $cordovaEmailComposer.open(email).then(null, function () {
+			// user cancelled email
+		  });
+	}, function () {
+	   // not available
+	   alert('Email Composer is not available in your device.');
+	});
+}
+```
+
+Also, add the dependency *$cordovaEmailComposer* to the SurveyCtrl definition.
+
+We will also place a Send Email button on Survey Response view, to send the response as email:
+
+```
+<div id="surveyResponse" ng-if="currentActiveStep === -1" class="list card">    
+	<div ng-repeat="step in responses" class="list">    
+		<div class="item item-divider">{{step.step}}</div>     
+		<div ng-repeat="response in step.responses" class="item">    
+			{{response.question}} - {{response.response}}     
+		</div>    
+	</div>   
+	<div class="item">    
+		<div class="button button-block button-assertive"    
+			ng-click="sendEmail()"> Send as Email    
+		</div>     
+	</div>    
+</div>    
+```

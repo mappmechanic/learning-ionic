@@ -25,11 +25,16 @@
 			</ion-item>
 		</form>
 	</div>
-	<div ng-if="currentActiveStep === -1" class="list card">
+	<div id="surveyResponse" ng-if="currentActiveStep === -1" class="list card">
 		<div ng-repeat="step in responses" class="list">
 			<div class="item item-divider">{{step.step}}</div>
 			<div ng-repeat="response in step.responses" class="item">
 				{{response.question}} - {{response.response}}
+			</div>
+		</div>
+		<div class="item">
+			<div class="button button-block button-assertive"
+				ng-click="sendEmail()"> Send as Email
 			</div>
 		</div>
 	</div>

@@ -102,6 +102,27 @@ angular.module('survey')
 				responses:questionResponses
 			}
 		});
-		$ionicScrollDelegate.scrollTop();gm
+		$ionicScrollDelegate.scrollTop();
+	}
+
+	$scope.sendEmail = function(){
+		$cordovaEmailComposer.isAvailable().then(function() {
+			var email = {
+			     to: 'yehtechnologies@gmail.com',
+			     cc: 'rahat.khanna@yahoo.co.in',
+			     bcc: ['rahat.khanna@flipkart.com'],
+			     attachments: [],
+			     subject: 'Survey Result',
+			     body: document.getElementById('surveyResponse').innerHTML,
+			     isHtml: true
+			   };
+
+			  $cordovaEmailComposer.open(email).then(null, function () {
+			    // user cancelled email
+			  });
+		}, function () {
+		   // not available
+		   alert('Email Composer is not available in your device.');
+		});
 	}
 }]);
