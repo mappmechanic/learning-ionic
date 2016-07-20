@@ -129,7 +129,30 @@ We have to create a new *.config([function(){...}])* block in our app.js to defi
 
 ```
 
-#### *Step 3:*
+#### *Step 3*:
+Please add the following code in folder *www/templates/tabs.html* file to put tabs in our app:
+
+```
+<ion-tabs class="tabs-icon-top tabs-color-active-positive">    
+
+  <!-- Home Tab -->    
+  <ion-tab title="Home" icon-off="ion-ios-home-outline" icon-on="ion-ios-home" href="#/tab/home">    
+    <ion-nav-view name="tab-home"></ion-nav-view>   
+  </ion-tab>    
+
+  <!-- Examples Tab -->    
+  <ion-tab title="Examples" icon-off="ion-ios-list-outline" icon-on="ion-ios-list" href="#/tab/examples">   
+    <ion-nav-view name="tab-examples"></ion-nav-view>    
+  </ion-tab>    
+
+  <!-- Author Tab -->    
+  <ion-tab title="Author" icon-off="ion-ios-person-outline" icon-on="ion-ios-person" href="#/tab/author">   
+    <ion-nav-view name="tab-author"></ion-nav-view>    
+  </ion-tab>    
+</ion-tabs>    
+```
+
+#### *Step 4:*
 For each view/feature, we should create a new folder that will hold its services/factories, controllers, module definitions and any directives it would use.
 
 Firstly, we will create a new folder *home* for home view and then create two files in it *homeCtrl.js* and *tab-home.html*.
@@ -182,7 +205,7 @@ Also, one last thing that we need to inject *home* module as a dependency to our
 
 Run the command *ionic serve* to see the output of only home.
 
-#### *Step 4:*
+#### *Step 5:*
 Now, we will create a new folder for *examples* and create 3 files in it - *examplesCtrl.js*, *examplesModule.js* and *tab-examples.html*.
 
 Please put the following code in *examplesModule.js*:
@@ -237,7 +260,7 @@ Also, one last thing that we need to inject *home* module as a dependency to our
 
 Run the command *ionic serve* to see the output of examples view by clicking on examples tab on bottom tab bar.
 
-#### *Step 5:*
+#### *Step 6:*
 Now, we will create a new folder for *author* and create 3 files in it - *authorCtrl.js*, *authorModule.js* and *tab-author.html*.
 
 Please put the following code in *authorModule.js*:
@@ -318,7 +341,7 @@ Now we have to create a new file *surveyModule.js* inside survey folder to decla
 	}])
 ```
 
-Also, create 2 new blank files *surveyCtrl.js* and *surveyTemlate.html*.
+Also, create 2 new blank files *surveyCtrl.js* and *surveyTemplate.html*.
 
 Now, firstly we have to create a new route for our *survey* example.
 
@@ -728,4 +751,119 @@ We will also place a Send Email button on Survey Response view, to send the resp
 		</div>     
 	</div>    
 </div>    
+```
+
+### Google Maps Geolocation Plugin
+
+We will now develop an example to use Google Maps & Cordova Geolocation plugin to draw a map and mark your current position on the map if GPS is enabled.
+
+#### *Step 1:*
+We have to add plugin using the following command in the command prompt:
+
+`cordova plugin add cordova-plugin-geolocation`
+
+#### *Step 2:*
+
+We have to make new folder named *map* in our examples folder. We will make nested feature folders now.
+
+Now we have to create a new file *mapModule.js* inside survey folder to declare a new module named *map* with the following code:
+
+```javascript
+	angular.module('map',[])
+
+	.run([function(){
+
+	}])
+
+	.config([function(){
+
+	}])
+```
+
+Also, create 2 new blank files *mapCtrl.js* and *mapTemplate.html*.
+
+Now, firstly we have to create a new route for our *map* example.
+
+In the *config* block of the module definition present in file *examplesModule.js*, please replace the config block with the following code:
+
+```javascript
+.config(['$stateProvider',function($stateProvider){
+	$stateProvider
+	.state('tab.map', {
+      url: '/examples/map',
+      views: {
+        'tab-examples': {
+          templateUrl: 'js/examples/map/mapTemplate.html',
+          controller: 'MapCtrl'
+        }
+      }
+    })
+}])
+```
+
+Also, in *examplesCtrl.js*, modify the first element of examples array to match the following code:
+
+```javascript
+$scope.examples = [
+	{
+		name:'Map Example',
+		descr:'It contains an example of Google Maps showing your location.',
+		icon:'ion-location',
+		link:'tab.map'
+	}
+]
+```
+
+Now, we have to inject all dependencies in index.html after all other script tags injections.
+
+```
+<!-- Map Example Module -->    
+<script src="js/examples/survey/mapModule.js"></script>   
+<script src="js/examples/survey/mapCtrl.js"></script>
+```
+
+In App.js, also we have to inject *map* as a dependency:
+
+`angular.module('learningIonic', ['ionic','home','examples','author','ngCordova','map'])`
+
+#### *Step 3:*
+Now, we should add the following code to *mapCtrl.js*:
+
+```javascript
+angular.module('map')
+
+.controller('MapCtrl',['$scope','$ionicPlatform','$cordovaGeolocation',function($scope,$ionicPlatform,$cordovaGeolocation) {
+	var options = {timeout: 10000, enableHighAccuracy: true};
+
+ 	$ionicPlatform.ready(function(){
+		$cordovaGeolocation.getCurrentPosition(options).then(function(position){
+
+  	    var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+  	    var mapOptions = {
+  	      center: latLng,
+  	      zoom: 15,
+  	      mapTypeId: google.maps.MapTypeId.ROADMAP
+  	    };
+
+  	    $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+		var marker = new google.maps.Marker({
+	      position: latLng,
+	      map: $scope.map,
+	    });
+  	  }, function(error){
+  	    console.log("Could not get location");
+  	  });
+	});
+}]);
+```
+
+Now, we will update the following code in *mapTemplate.html*:
+```
+<ion-view view-title="Map Current Position">    
+  <ion-content class="">   
+		<div id="map">    
+		</div>     
+  </ion-content>    
+</ion-view>     
 ```
