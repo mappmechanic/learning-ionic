@@ -1,0 +1,27 @@
+<ion-view view-title="Accelerometer">
+  <ion-content class="">
+		<ion-list>
+			<ion-item class="item-divider">
+				Select Frequency (in milliseconds)
+			</ion-item>
+			<ion-item>
+				<input type="range" max="60000" min="1000" ng-model="frequency"> {{ frequency }}
+			</ion-item>
+			<ion-item>
+				<div class="button button-block button-assertive"
+					ng-click="updateFrequency()"> Update
+				</div>
+			</ion-item>
+			<ion-item>
+				<div class="button button-block button-primary"
+					ng-click="stopWatching()"> Stop Watching
+				</div>
+			</ion-item>
+			<ion-item ng-repeat="datapoint in dataPoints">
+				x : {{ datapoint.x }} <br>
+				y : {{ datapoint.y }} <br>
+				z : {{ datapoint.z }}
+			</ion-item>
+		</ion-list>
+  </ion-content>
+</ion-view>

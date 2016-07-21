@@ -24,4 +24,13 @@ angular.module('examples',['survey'])
         }
       }
     })
+	.state('tab.accelerometer', {
+      url: '/examples/accelerometer',
+      views: {
+        'tab-examples': {
+          templateUrl: 'js/examples/accelerometer/accelerometerTemplate.html',
+          controller: 'AccelerometerCtrl'
+        }
+      }
+    })
 }])

@@ -818,8 +818,8 @@ Now, we have to inject all dependencies in index.html after all other script tag
 
 ```
 <!-- Map Example Module -->    
-<script src="js/examples/survey/mapModule.js"></script>   
-<script src="js/examples/survey/mapCtrl.js"></script>
+<script src="js/examples/map/mapModule.js"></script>   
+<script src="js/examples/map/mapCtrl.js"></script>
 ```
 
 In App.js, also we have to inject *map* as a dependency:
@@ -866,4 +866,155 @@ Now, we will update the following code in *mapTemplate.html*:
 		</div>     
   </ion-content>    
 </ion-view>     
+```
+
+
+### Cordova Device Motion Plugin
+
+We will now develop an example to use Accelerometer sensor of our app with Cordova Device Motion plugin to detect changes in acceleration of our device.
+
+#### *Step 1:*
+We have to add plugin using the following command in the command prompt:
+
+`cordova plugin add cordova-plugin-device-motion`
+
+#### *Step 2:*
+
+We have to make new folder named *accelerometer* in our examples folder. We will make nested feature folders now.
+
+Now we have to create a new file *accelerometerModule.js* inside survey folder to declare a new module named *accelerometer* with the following code:
+
+```javascript
+	angular.module('accelerometer',[])
+
+	.run([function(){
+
+	}])
+
+	.config([function(){
+
+	}])
+```
+
+Also, create 2 new blank files *accelerometerCtrl.js* and *accelerometerTemplate.html*.
+
+Now, firstly we have to create a new route for our *accelerometer* example.
+
+In the *config* block of the module definition present in file *accelerometerModule.js*, please replace the config block with the following code:
+
+```javascript
+.config(['$stateProvider',function($stateProvider){
+	$stateProvider
+	.state('tab.accelerometer', {
+      url: '/examples/accelerometer',
+      views: {
+        'tab-examples': {
+          templateUrl: 'js/examples/accelerometer/accelerometerTemplate.html',
+          controller: 'AccelerometerCtrl'
+        }
+      }
+    })
+}])
+```
+
+Also, in *accelerometerCtrl.js*, add new element into examples array to match the following code:
+
+```javascript
+$scope.examples = [
+	...
+	{
+		name:'Accelerometer Example',
+		descr:'It contains an example of detecting Accelerometer changes.',
+		icon:'ion-ios-speedometer',
+		link:'tab.accelerometer'
+	}
+]
+```
+
+Now, we have to inject all dependencies in index.html after all other script tags injections.
+
+```
+<!-- Map Example Module -->    
+<script src="js/examples/accelerometer/accelerometerModule.js"></script>   
+<script src="js/examples/accelerometer/accelerometerCtrl.js"></script>
+```
+
+In App.js, also we have to inject *accelerometer* as a dependency:
+
+`angular.module('learningIonic', ['ionic','home','examples','author','ngCordova','map','accelerometer'])`
+
+#### *Step 3:*
+Now, we should add the following code to *accelerometerCtrl.js*:
+
+```javascript
+angular.module('accelerometer')
+
+.controller('AccelerometerCtrl',['$scope','$ionicPlatform','$cordovaDeviceMotion',
+	function($scope,$ionicPlatform,$cordovaDeviceMotion) {
+		$scope.dataPoints = [];
+		$scope.frequency = 500;
+		var accelerationWatch;
+
+		$scope.init = function(){
+			$scope.startAccelerationWatch($scope.frequency);
+		}
+
+		$scope.startAccelerationWatch = function(newFrequency){
+			$ionicPlatform.ready(function(){
+				accelerationWatch = $cordovaDeviceMotion.watchAcceleration({
+					frequency:newFrequency
+				});
+			});
+
+			accelerationWatch.then(null,function(error){
+				alert('An error occurred');
+				alert(JSON.stringify(error));
+			},function(result){
+				$scope.dataPoints.unshift(result);
+			});
+		}
+
+		$scope.updateFrequency = function(){
+			$scope.stopWatching();
+			$scope.startAccelerationWatch($scope.frequency);
+		}
+
+		$scope.stopWatching = function(){
+			if(accelerationWatch){
+				accelerationWatch.clearWatch();
+			}
+		}
+
+}]);
+```
+
+Now, we will update the following code in *accelerometerTemplate.html*:
+```
+<ion-view view-title="Accelerometer">    
+  <ion-content class="">   
+		<ion-list>    
+			<ion-item class="item-divider">   
+				Select Frequency (in milliseconds)    
+			</ion-item>   
+			<ion-item>   
+				<input type="range" max="60000" min="1000" ng-model="frequency"> {{ frequency }}   
+			</ion-item>   
+			<ion-item>   
+				<div class="button button-block button-assertive"    
+					ng-click="updateFrequency()"> Update   
+				</div>   
+			</ion-item>   
+			<ion-item>   
+				<div class="button button-block button-primary"   
+					ng-click="stopWatching()"> Stop Watching    
+				</div>   
+			</ion-item>   
+			<ion-item ng-repeat="datapoint in dataPoints">    
+				x : {{ datapoint.x }} <br>   
+				y : {{ datapoint.y }} <br>   
+				z : {{ datapoint.z }}    
+			</ion-item>    
+		</ion-list>     
+  </ion-content>    
+</ion-view>    
 ```

@@ -1,6 +1,7 @@
 angular.module('survey')
 
-.controller('SurveyCtrl',['$scope','$ionicScrollDelegate',function($scope,$ionicScrollDelegate) {
+.controller('SurveyCtrl',['$scope','$ionicScrollDelegate','$cordovaEmailComposer',
+function($scope,$ionicScrollDelegate,$cordovaEmailComposer) {
 	$scope.survey = {
 		steps:[
 				{
