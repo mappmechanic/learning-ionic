@@ -17,7 +17,10 @@
 					ng-click="stopWatching()"> Stop Watching
 				</div>
 			</ion-item>
-			<ion-item ng-repeat="datapoint in dataPoints">
+			<ion-item ng-repeat="datapoint in dataPoints track by $index">
+                timestamp : {{ datapoint.timestamp }} <br>
+                lat : {{ datapoint.lat }} <br>
+				long : {{ datapoint.long }} <br>
 				x : {{ datapoint.x }} <br>
 				y : {{ datapoint.y }} <br>
 				z : {{ datapoint.z }}
