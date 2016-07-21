@@ -1,9 +1,9 @@
 angular.module('accelerometer')
 
-.controller('AccelerometerCtrl',['$scope','$ionicPlatform','$cordovaDeviceMotion','$cordovaGeolocation','$cordovaFile',
-	function($scope,$ionicPlatform, $cordovaDeviceMotion, $cordovaGeolocation, $cordovaFile) {
+.controller('AccelerometerCtrl',['$scope','$ionicPlatform','$cordovaDeviceMotion','$cordovaGeolocation','$cordovaFile','$cordovaEmailComposer','$base64',
+	function($scope,$ionicPlatform, $cordovaDeviceMotion, $cordovaGeolocation, $cordovaFile,$cordovaEmailComposer,$base64) {
 		$scope.dataPoints = [];
-		$scope.frequency = 200;
+		$scope.frequency = 100;
 		var accelerationWatch;
 		var geoLocationWatch;
 		$scope.currentLocation = {lat: 0, long: 0};
@@ -36,8 +36,7 @@ angular.module('accelerometer')
 					z: result.z,
 					timestamp: result.timestamp
 				}
-				//$scope.write(temp);
-				$scope.dataPoints.unshift(temp);
+				$scope.dataPoints.push(temp);
 			});
 
 			geoLocationWatch.then(null,function(error) {
@@ -68,12 +67,34 @@ angular.module('accelerometer')
 		}
 
 
-		$scope.write = function(value){
-
-			$cordovaFile.writeFile(cordova.file.dataDirectory, "vikramsanthalia.txt", value, true)
-		      .then(function (success) {
-		      }, function (error) {
-		        console.log(error);
-		      });
+		$scope.sendEmail = function(value){
+			$ionicPlatform.ready(function(){
+				var finalCSV = ConvertToCSV($scope.dataPoints);
+				console.log(finalCSV)
+				$cordovaFile.writeFile(cordova.file.externalDataDirectory, "bumps"+Math.floor(Date.now() / 1000)+".csv", finalCSV, true)
+			      .then(function (success) {
+					alert('Write File Success');
+			      }, function (error) {
+			        alert('Write File error : '+JSON.stringify(error));
+			      });;
+			});
 		}
+
+		function ConvertToCSV(objArray) {
+        var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+        var str = '';
+
+        for (var i = 0; i < array.length; i++) {
+            var line = '';
+            for (var index in array[i]) {
+                if (line != '') line += ','
+
+                line += array[i][index];
+            }
+
+            str += line + '\r\n';
+        }
+
+        return str;
+    }
 }]);
