@@ -10,6 +10,8 @@
   <content src="index.html"/>
   <access origin="*"/>
   <allow-navigation href="*://*.google.com/*"/>
+  <allow-navigation href="*://*.googleapis.com/*"/>
+  <allow-navigation href="*://*.google.com/*"/>
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
@@ -22,8 +24,6 @@
   <feature name="StatusBar">
     <param name="ios-package" onload="true" value="CDVStatusBar"/>
   </feature>
-  <allow-navigation href="*://*.googleapis.com/*"/>
-  <allow-navigation href="*://*.google.com/*"/>
   <platform name="android">
     <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png"/>
     <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png"/>
