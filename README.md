@@ -13,6 +13,8 @@ A Repository to help you learn Ionic in a very easy and Practical way with lots 
 2. [Developing HelloWorld App](https://github.com/mappmechanic/learning-ionic#developing-helloworld-app)
 3. [Tabs & States in Ionic App](https://github.com/mappmechanic/learning-ionic#tabs--states-in-ionic-apps)
 4. [Multi Step Form & Validations](https://github.com/mappmechanic/learning-ionic#multi-step-form--validations)
+5. [Cordova Maps Geolocation Plugin](https://github.com/mappmechanic/learning-ionic#google-maps-geolocation-plugin)
+6. [Cordova Device Motion Plugin](https://github.com/mappmechanic/learning-ionic#cordova-device-motion-plugin)
 
 ## Code Samples with Steps :
 
