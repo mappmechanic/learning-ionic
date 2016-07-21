@@ -121,7 +121,9 @@ function($scope,$ionicScrollDelegate,$cordovaEmailComposer) {
 			  $cordovaEmailComposer.open(email).then(null, function () {
 			    // user cancelled email
 			  });
-		}, function () {
+		}, function (error) {
+			console.log(error);
+			console.log(JSON.stringify(error));
 		   // not available
 		   alert('Email Composer is not available in your device.');
 		});
