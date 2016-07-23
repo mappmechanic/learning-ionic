@@ -1,0 +1,15 @@
+<ion-view view-title="Gestures">
+	<ion-content class="padding"
+				  id="content"
+				  on-swipe-up="onGesture('Swipe Up')"
+				  on-swipe-right="onGesture('Swipe Right')"
+				  on-swipe-down="onGesture('Swipe Down')"
+				  on-swipe-left="onGesture('Swipe Left')"
+				  on-hold="onGesture('Hold')"
+				  on-double-tap="onGesture('Double-Tap',$event)"
+				  scroll="false">
+
+		 <h2 style="text-align: center;">Use any touch gesture on this page</h2>
+		 <h2 style="text-align: center;">Used touch gesture: {{gesture.used}}</h2>
+	</ion-content>
+</ion-view>

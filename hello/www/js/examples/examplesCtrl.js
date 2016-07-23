@@ -19,6 +19,12 @@ angular.module('examples')
 			descr:'It contains an example of detecting Accelerometer changes.',
 			icon:'ion-ios-speedometer',
 			link:'tab.accelerometer'
+		},
+		{
+			name:'Gestures Example',
+			descr:'It contains an example of using gestures and touch events.',
+			icon:'ion-android-hand',
+			link:'tab.gestures'
 		}
 	]
 }]);
