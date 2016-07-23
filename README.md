@@ -768,7 +768,7 @@ We have to add plugin using the following command in the command prompt:
 
 We have to make new folder named *map* in our examples folder. We will make nested feature folders now.
 
-Now we have to create a new file *mapModule.js* inside survey folder to declare a new module named *map* with the following code:
+Now we have to create a new file *mapModule.js* inside map folder to declare a new module named *map* with the following code:
 
 ```javascript
 	angular.module('map',[])
@@ -884,7 +884,7 @@ We have to add plugin using the following command in the command prompt:
 
 We have to make new folder named *accelerometer* in our examples folder. We will make nested feature folders now.
 
-Now we have to create a new file *accelerometerModule.js* inside survey folder to declare a new module named *accelerometer* with the following code:
+Now we have to create a new file *accelerometerModule.js* inside accelerometer folder to declare a new module named *accelerometer* with the following code:
 
 ```javascript
 	angular.module('accelerometer',[])
@@ -919,7 +919,7 @@ In the *config* block of the module definition present in file *accelerometerMod
 }])
 ```
 
-Also, in *accelerometerCtrl.js*, add new element into examples array to match the following code:
+Also, in *examplesCtrl.js*, add new element into examples array to match the following code:
 
 ```javascript
 $scope.examples = [
@@ -1018,5 +1018,113 @@ Now, we will update the following code in *accelerometerTemplate.html*:
 			</ion-item>    
 		</ion-list>     
   </ion-content>    
+</ion-view>    
+```
+
+### Ionic Framework Gestures & Touch Events
+
+We will now develop an example to show all the abstract touch and gesture events available in Ionic Framework. There are two ways to invoke these events, one is by using the directive and other is by registering an event handler on the $ionicGesture service.
+
+#### *Step 1:*
+
+We have to make new folder named *gestures* in our examples folder. We will make nested feature folders now as per previous features.
+
+Now we have to create a new file *gesturesModule.js* inside gestures folder to declare a new module named *gestures* with the below given code. Also this time, we will declare the state for this view in the config block of this module itself:
+
+```javascript
+angular.module('gestures',[])
+
+.run([function(){
+
+}])
+
+.config(['$stateProvider',function($stateProvider){
+	$stateProvider
+	.state('tab.gestures', {
+	  url: '/examples/gestures',
+	  views: {
+		'tab-examples': {
+		  templateUrl: 'js/examples/gestures/gesturesTemplate.html',
+		  controller: 'GesturesCtrl'
+		}
+	  }
+  });
+}])
+```
+
+Also, create 2 new blank files *gesturesCtrl.js* and *gesturesTemplate.html*.
+
+Now, firstly we have to create a new route for our *accelerometer* example.
+
+Also, in *examplesCtrl.js*, add new element into examples array to match the following code:
+
+```javascript
+$scope.examples = [
+	...
+	{
+		name:'Gestures Example',
+		descr:'It contains an example of using gestures and touch events.',
+		icon:'ion-android-hand',
+		link:'tab.gestures'
+	}
+]
+```
+
+Now, we have to inject all dependencies in index.html after all other script tags injections.
+
+```
+<!-- Gestures Example Module -->    
+<script src="js/examples/gestures/gesturesModule.js"></script>
+<script src="js/examples/gestures/gesturesCtrl.js"></script>
+```
+
+In App.js, also we have to inject *gestures* as a dependency:
+
+`angular.module('learningIonic', ['ionic','home','examples','author','ngCordova','map','accelerometer','gestures'])`
+
+#### *Step 3:*
+Now, we should add the following code to *gesturesCtrl.js*:
+
+```javascript
+angular.module('gestures')
+
+.controller('GesturesCtrl',['$scope','$ionicGesture',
+	function($scope,$ionicGesture) {
+		$scope.gesture = {
+			used: ''
+		};
+
+		$scope.onGesture = function(gesture,event) {
+			$scope.gesture.used = gesture;
+			console.log(gesture);
+		}
+
+  		var element = angular.element(document.querySelector('#content'));
+
+		$ionicGesture.on('tap', function(e){
+			$scope.$apply(function() {
+				console.log('Tap');
+				$scope.gesture.used = 'Tap';
+			});
+		}, element);
+}]);
+```
+
+Now, we will update the following code in *gesturesTemplate.html*:
+```
+<ion-view view-title="Gestures">    
+	<ion-content class="padding"    
+				  id="content"     
+				  on-swipe-up="onGesture('Swipe Up')"    
+				  on-swipe-right="onGesture('Swipe Right')"     
+				  on-swipe-down="onGesture('Swipe Down')"     
+				  on-swipe-left="onGesture('Swipe Left')"    
+				  on-hold="onGesture('Hold')"    
+				  on-double-tap="onGesture('Double-Tap',$event)"     
+				  scroll="false">    
+
+		 <h2 style="text-align: center;">Use any touch gesture on this page</h2>    
+		 <h2 style="text-align: center;">Used touch gesture: {{gesture.used}}</h2>    
+	</ion-content>    
 </ion-view>    
 ```
