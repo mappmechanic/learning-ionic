@@ -1,6 +1,29 @@
 <ion-view view-title="Expenses">
-	<ion-content class="padding">
-
-
+	<ion-nav-buttons side="secondary">
+      <button class="button button-energized" ng-click="addExpenseModal()">
+        Add Expense
+      </button>
+	  <button class="button button-icon icon ion-ios-minus-outline"
+	  	ng-click="toggleDeleteIcons()">
+	  </button>
+    </ion-nav-buttons>
+	<ion-content>
+		<ion-list can-swipe="canSwipe" show-delete="showDelete">
+			<ion-item class="item-divider" ng-if="expenseList.length === 0">
+				There are no expenses made. You are RICH !
+			</ion-item>
+			<ion-item
+			ng-repeat="expense in expenseList track by $index">
+				{{expense.detail}}
+				<span class="badge badge-assertive">RM {{expense.amount}}</span>
+				<ion-option-button class="button-royal"
+                       ng-click="editExpense(expense)">
+			      Edit
+			    </ion-option-button>
+				<ion-delete-button class="ion-minus-circled"
+                       ng-click="items.splice($index, 1)">
+    			</ion-delete-button>
+			</ion-item>
+		</ion-list>
 	</ion-content>
 </ion-view>
