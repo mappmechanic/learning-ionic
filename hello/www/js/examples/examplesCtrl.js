@@ -25,6 +25,12 @@ angular.module('examples')
 			descr:'It contains an example of using gestures and touch events.',
 			icon:'ion-android-hand',
 			link:'tab.gestures'
+		},
+		{
+			name:'Expenses(PouchDB) Example',
+			descr:'It contains an example of noting down expenses using PouchDB.',
+			icon:'ion-social-usd',
+			link:'tab.expenses'
 		}
 	]
 }]);
