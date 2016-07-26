@@ -16,6 +16,8 @@ A Repository to help you learn Ionic in a very easy and Practical way with lots 
 5. [Cordova Maps Geolocation Plugin](https://github.com/mappmechanic/learning-ionic#google-maps-geolocation-plugin)
 6. [Cordova Device Motion Plugin](https://github.com/mappmechanic/learning-ionic#cordova-device-motion-plugin)
 7. [Gestures & Touch Events](https://github.com/mappmechanic/learning-ionic#ionic-framework-gestures--touch-events)
+8.[Expense Manager with Pouch DB (Offline Data & Sync Example)](https://github.com/mappmechanic/learning-ionic#expense-manager-with-pouch-db-offline-data--sync-example)
+
 
 ## Code Samples with Steps :
 
@@ -24,6 +26,7 @@ A Repository to help you learn Ionic in a very easy and Practical way with lots 
 We need to install all the dependencies and then use the Ionic CLI to initiate a new project.
 
 Requirements for Setup:
+
 * Install NodeJS & GIT
 * Check if npm path is working correctly by the following command
 ```
