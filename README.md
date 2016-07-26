@@ -15,6 +15,7 @@ A Repository to help you learn Ionic in a very easy and Practical way with lots 
 4. [Multi Step Form & Validations](https://github.com/mappmechanic/learning-ionic#multi-step-form--validations)
 5. [Cordova Maps Geolocation Plugin](https://github.com/mappmechanic/learning-ionic#google-maps-geolocation-plugin)
 6. [Cordova Device Motion Plugin](https://github.com/mappmechanic/learning-ionic#cordova-device-motion-plugin)
+7. [Gestures & Touch Events](https://github.com/mappmechanic/learning-ionic#ionic-framework-gestures--touch-events)
 
 ## Code Samples with Steps :
 
@@ -936,7 +937,7 @@ $scope.examples = [
 Now, we have to inject all dependencies in index.html after all other script tags injections.
 
 ```
-<!-- Map Example Module -->    
+<!-- Accelerometer Example Module -->    
 <script src="js/examples/accelerometer/accelerometerModule.js"></script>   
 <script src="js/examples/accelerometer/accelerometerCtrl.js"></script>
 ```
@@ -1127,4 +1128,236 @@ Now, we will update the following code in *gesturesTemplate.html*:
 		 <h2 style="text-align: center;">Used touch gesture: {{gesture.used}}</h2>    
 	</ion-content>    
 </ion-view>    
+```
+
+### Expense Manager with Pouch DB (Offline Data & Sync Example)
+
+We will now develop an example to have offline data storage and sync it with server when it is online. We will be using the PouchDB and CouchDB for this.
+
+#### *Step 1:*
+
+We have to make new folder named *expenses* in our examples folder. We will make nested feature folders now.
+
+Now we have to create a new file *expensesModule.js* inside accelerometer folder to declare a new module named *expenses* with the following code:
+
+```javascript
+angular.module('expenses',[])
+
+.run([function(){
+
+}])
+
+.config([function(){
+
+  });
+}])
+```
+
+Also, create 2 new blank files *expensesCtrl.js* and *expensesTemplate.html*.
+
+Now, firstly we have to create a new route for our *expenses* example.
+
+In the *config* block of the module definition present in file *expensesModule.js*, please replace the config block with the following code:
+
+```javascript
+.config(['$stateProvider',function($stateProvider){
+	$stateProvider
+	.state('tab.expenses', {
+	  url: '/examples/expenses',
+	  views: {
+		'tab-examples': {
+		  templateUrl: 'js/examples/expenses/expensesTemplate.html',
+		  controller: 'ExpensesCtrl'
+		}
+	  }
+  });
+}])
+```
+
+#### *Step 2:*
+
+Also, in *examplesCtrl.js*, add new element into examples array to match the following code:
+
+```javascript
+$scope.examples = [
+	...
+	{
+		name:'Expenses(PouchDB) Example',
+		descr:'It contains an example of noting down expenses using PouchDB.',
+		icon:'ion-social-usd',
+		link:'tab.expenses'
+	}
+]
+```
+
+Now, we have to inject all dependencies in index.html after all other script tags injections.
+
+```
+<!-- Expenses Example Module -->
+<script src="js/examples/expenses/expensesModule.js"></script>
+<script src="js/examples/expenses/expensesCtrl.js"></script>
+```
+
+In App.js, also we have to inject *expenses* as a dependency:
+
+`angular.module('learningIonic', ['ionic','home','examples','author','ngCordova','map','accelerometer','expenses'])`
+
+#### *Step 4:*
+We will add code to the new file created *expensesTemplate.html*:
+
+```
+<ion-view view-title="Expenses">    
+	<ion-nav-buttons side="secondary">   
+      <button class="button button-energized" ng-click="addExpenseModal()">     
+        Add Expense    
+      </button>    
+	  <button class="button button-icon icon ion-ios-minus-outline"     
+	  	ng-click="toggleDeleteIcons()">    
+	  </button>    
+    </ion-nav-buttons>    
+	<ion-content>     
+		<ion-list can-swipe="canSwipe" show-delete="showDelete">     
+			<ion-item class="item-divider" ng-if="expenseList.length === 0">    
+				There are no expenses made. You are RICH !     
+			</ion-item>     
+			<ion-item     
+			ng-repeat="expense in expenseList track by $index">     
+				{{expense.detail}}     
+ 				<span class="badge badge-assertive">RM {{expense.amount}}</span>     
+				<ion-option-button class="button-royal"   
+                       ng-click="editExpense(expense)">     
+			      Edit   
+			    </ion-option-button>    
+				<ion-delete-button class="ion-minus-circled"    
+                       ng-click="items.splice($index, 1)">     
+    			</ion-delete-button>     
+			</ion-item>    
+		</ion-list>     
+	</ion-content>     
+</ion-view>     
+```
+#### *Step 5:*
+
+We also require to create a new file called *addExpenseTpl.html* as it will contain a modal which we will call on press of add expense button:
+
+```
+<ion-modal-view>    
+    <ion-header-bar  class="bar-balanced">    
+        <h1 class="title">Add Expense</h1>    
+		<button class="button button-clear button-primary"    ng-click="modal.hide()">Cancel</button>    
+    </ion-header-bar>    
+    <ion-content>    
+        <div class="list">    
+            <label class="item item-input">     
+                <input type="text" ng-model="newExpense.detail" placeholder="Expense">     
+            </label>    
+            <label class="item item-input">     
+                <input type="number" ng-model="newExpense.amount"      placeholder="Amount">    
+            </label>    
+            <button ng-click="addNewExpense()" class="button button-full     button-positive">     
+                Add Expense    
+            </button>    
+        </div>    
+    </ion-content>    
+</ion-modal-view>    
+```
+
+#### *Step 6:*
+
+Now, we will add the following code in the new file created *expensesCtrl.js*:
+
+```javascript
+angular.module('expenses')
+
+.controller('ExpensesCtrl',['$scope','$ionicModal',
+	function($scope,$ionicModal) {
+		var localDb,remoteDb;
+		initCtrl();
+
+		function initCtrl(){
+			localDb = new PouchDB('myexpenses');
+			remoteDb = new PouchDB('http://localhost:5984/myexpenses');
+			$scope.expenseList = [];
+			$scope.newExpense = {};
+			$scope.canSwipe = true;
+			$scope.showDelete = false;
+			initializeModal();
+			fetchExistingExpenses(localDb);
+			// Unidirectional Sync Possibilities
+				// localDb.replicate.to(remoteDb);
+				// localDb.replicate.from(remoteDb);
+			syncDbs();
+			remoteDb.changes({live: true, since: 'now'}).on('change', function (change) {
+			  // change.deleted is a property to detect if a change is for deletion of a document
+			  fetchExistingExpenses(remoteDb);
+			}).on('error', console.log.bind(console));
+		}
+
+		function initializeModal(){
+			$ionicModal.fromTemplateUrl('js/examples/expenses/addExpenseTpl.html', {
+				scope: $scope,
+				animation: 'slide-in-up'
+			}).then(function(modal) {
+				$scope.modal = modal;
+			});
+		}
+
+		function fetchExistingExpenses(db){
+			$scope.expenseList = [];
+			db.allDocs({
+			    include_docs: true
+			}).then(function (result) {
+			    for(var i=0;i<result.rows.length;i++){
+			        var obj = {
+			            "_id": result.rows[i].doc.id,
+			            "detail": result.rows[i].doc.detail,
+			            "amount": result.rows[i].doc.amount
+			        }
+			        $scope.expenseList.push(obj);
+			        $scope.$apply();
+			    }
+			})
+			.catch(function (err) {
+			    console.log(err);
+			});
+		}
+
+		function syncDbs(){
+			// Initialize Sync
+			localDb.sync(remoteDb).on('complete', function () {
+			  // yay, we're in sync!
+			}).on('error', function (err) {
+			  // boo, we hit an error!
+			});
+		}
+
+		$scope.toggleDeleteIcons = function(){
+			$scope.showDelete = !$scope.showDelete;
+		}
+
+		$scope.addExpenseModal = function(){
+			$scope.modal.show();
+		}
+
+		$scope.$on('$destroy', function() {
+		    $scope.modal.remove();
+		});
+
+		$scope.addNewExpense = function(){
+			var timestamp = String(new Date().getTime());
+
+			var newExpense = {
+		        "_id": timestamp,
+		        "detail": $scope.newExpense.detail,
+		        "amount": $scope.newExpense.amount
+			};
+
+			localDb.put(newExpense).then(function (response) {
+			    $scope.expenseList.push(newExpense);   // Add to items array
+			    $scope.modal.hide();      // Close the modal
+			}).catch(function (err) {
+			    console.log(err);
+			});
+		};
+}]);
 ```
