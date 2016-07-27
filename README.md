@@ -17,7 +17,7 @@ A Repository to help you learn Ionic in a very easy and Practical way with lots 
 6. [Cordova Device Motion Plugin](https://github.com/mappmechanic/learning-ionic#cordova-device-motion-plugin)
 7. [Gestures & Touch Events](https://github.com/mappmechanic/learning-ionic#ionic-framework-gestures--touch-events)   
 8. [Expense Manager with Pouch DB (Offline Data & Sync Example)](https://github.com/mappmechanic/learning-ionic#expense-manager-with-pouch-db-offline-data--sync-example)
-9. [Integrating with Paypal Payment Gateway]()
+9. [Integrating with Paypal Payment Gateway](https://github.com/mappmechanic/learning-ionic#integrating-with-paypal-payment-gateway)
 
 ## Code Samples with Steps :
 
