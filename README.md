@@ -15,9 +15,9 @@ A Repository to help you learn Ionic in a very easy and Practical way with lots 
 4. [Multi Step Form & Validations](https://github.com/mappmechanic/learning-ionic#multi-step-form--validations)
 5. [Cordova Maps Geolocation Plugin](https://github.com/mappmechanic/learning-ionic#google-maps-geolocation-plugin)
 6. [Cordova Device Motion Plugin](https://github.com/mappmechanic/learning-ionic#cordova-device-motion-plugin)
-7. [Gestures & Touch Events](https://github.com/mappmechanic/learning-ionic#ionic-framework-gestures--touch-events)
-8.[Expense Manager with Pouch DB (Offline Data & Sync Example)](https://github.com/mappmechanic/learning-ionic#expense-manager-with-pouch-db-offline-data--sync-example)
-
+7. [Gestures & Touch Events](https://github.com/mappmechanic/learning-ionic#ionic-framework-gestures--touch-events)   
+8. [Expense Manager with Pouch DB (Offline Data & Sync Example)](https://github.com/mappmechanic/learning-ionic#expense-manager-with-pouch-db-offline-data--sync-example)
+9. [Integrating with Paypal Payment Gateway]()
 
 ## Code Samples with Steps :
 
@@ -1131,6 +1131,191 @@ Now, we will update the following code in *gesturesTemplate.html*:
 		 <h2 style="text-align: center;">Used touch gesture: {{gesture.used}}</h2>    
 	</ion-content>    
 </ion-view>    
+```
+
+### Integrating with Paypal Payment Gateway
+
+We will now develop an example to integrate to Paypal Payment Gateway.
+
+#### *Step 1:*
+
+We have to make new folder named *paypal* in our examples folder. We will make nested feature folders now.
+
+Now we have to create a new file *paypalModule.js* inside accelerometer folder to declare a new module named *paypal* with the following code:
+
+```javascript
+angular.module('paypal',[])
+
+.run([function(){
+
+}])
+
+.config([function(){
+
+  });
+}])
+```
+
+Also, create 2 new blank files *paypalCtrl.js* and *paypalTemplate.html*.
+
+Now, firstly we have to create a new route for our *paypal* example.
+
+In the *config* block of the module definition present in file *paypalModule.js*, please replace the config block with the following code:
+
+```javascript
+.config(['$stateProvider',function($stateProvider){
+	$stateProvider
+	.state('tab.paypal', {
+	  url: '/examples/paypal',
+	  views: {
+		'tab-examples': {
+		  templateUrl: 'js/examples/paypal/paypalTemplate.html',
+		  controller: 'PaypalCtrl'
+		}
+	  }
+  });
+}])
+```
+
+#### *Step 2:*
+
+Also, in *examplesCtrl.js*, add new element into examples array to match the following code:
+
+```javascript
+$scope.examples = [
+	...
+	{
+		name:'Paypal Integration',
+		descr:'It contains an example of integrating with paypal to process a payment.',
+		icon:'ion-bag',
+		link:'tab.paypal'
+	}
+]
+```
+
+Now, we have to inject all dependencies in index.html after all other script tags injections.
+
+```
+<!-- Paypal Example Module -->
+<script type="text/javascript" src="js/paypal-mobile-js-helper.js"></script>
+<script src="js/examples/paypal/paypalModule.js"></script>
+<script src="js/examples/paypal/paypalCtrl.js"></script>
+<script src="js/examples/paypal/paypalService.js"></script>
+```
+
+In App.js, also we have to inject *expenses* as a dependency:
+
+`angular.module('learningIonic', ['ionic','home','examples','author','ngCordova','map','accelerometer','expenses','paypal'])`
+
+#### *Step 3:*
+Now you have to add 2 Plugins from the following commands:
+
+`cordova plugin add com.paypal.cordova.mobilesdk`
+
+`cordova plugin add card.io.cordova.mobilesdk`
+
+#### *Step 4:*
+Add the contents for the file *paypalCtrl.js*:
+
+```javascript
+angular.module('paypal')
+
+.controller('PaypalCtrl',['$scope','PaypalService',
+	function($scope,PaypalService) {
+	PaypalService.initPaymentUI();
+	$scope.paymentDone = false;
+
+	$scope.buyNow = function(){
+		var paymentObj = {
+			subtotal:"50.00",
+			shipping:"5.00",
+			tax:"5.00",
+			total:"60.00",
+			currency:"USD",
+			productName:"iPhone 6s 16GB",
+			description:"Online Purchase"
+		}
+		PaypalService.initiatePayment(paymentObj);
+	}
+}]);
+```
+
+#### *Step 5:*
+Add the contents for the file *paypalService.js*:
+
+```javascript
+angular.module('paypal')
+
+.factory('PaypalService',['$ionicPlatform',function($ionicPlatform){
+	var serviceObj = {
+		initPaymentUI: function() {
+	    var clientIDs = {
+	      "PayPalEnvironmentProduction": "YOUR_PRODUCTION_CLIENT_ID",
+	      "PayPalEnvironmentSandbox": "AYnm7ubmkTjfla26ud0cHAdW-FdVdT4797tm1Qu23MevCbuch9zfiXJiVvosqASbPGKZ-uZxlAJCYj-A"
+	    };
+		$ionicPlatform.ready(function(){
+	    	PayPalMobile.init(clientIDs, serviceObj.onPayPalMobileInit);
+		});
+	  },
+	  onSuccesfulPayment: function(payment) {
+	    console.log("payment success: " + JSON.stringify(payment, null, 4));
+	  },
+	  onAuthorizationCallback: function(authorization) {
+	    console.log("authorization: " + JSON.stringify(authorization, null, 4));
+	  },
+	  createPayment: function(paymentObj) {
+	    // for simplicity use predefined amount
+	    var paymentDetails = new PayPalPaymentDetails(paymentObj.subtotal, paymentObj.shipping, paymentObj.tax);
+	    var payment = new PayPalPayment(paymentObj.total, paymentObj.currency, paymentObj.productName, paymentObj.description,paymentDetails);
+	    return payment;
+	  },
+	  configuration: function() {
+	    // for more options see `paypal-mobile-js-helper.js`
+	    var config = new PayPalConfiguration({
+	      merchantName: "My test shop",
+	      merchantPrivacyPolicyURL: "https://mytestshop.com/policy",
+	      merchantUserAgreementURL: "https://mytestshop.com/agreement"
+	    });
+	    return config;
+	  },
+	  initiatePayment: function(paymentObj) {
+	      PayPalMobile.renderSinglePaymentUI(serviceObj.createPayment(paymentObj), serviceObj.onSuccesfulPayment,
+	        serviceObj.onUserCanceled);
+	  },
+	  onPayPalMobileInit: function() {
+	    // must be called
+	    // use PayPalEnvironmentNoNetwork mode to get look and feel of the flow
+	    PayPalMobile.prepareToRender("PayPalEnvironmentNoNetwork", serviceObj.configuration(),
+	      serviceObj.onPrepareRender);
+	  },
+	  onUserCanceled: function(result) {
+	    console.log(result);
+	  }
+  }
+
+  return serviceObj;
+}]);
+```
+
+#### *Step 6*
+Add the contents for the file *paypalTemplate.html*:
+
+```
+<ion-view view-title="Paypal Integration">    
+	<ion-content scroll="false">    
+		<ion-list>    
+			<ion-item class="item item-thumbnail-left">    
+			      <img src="https://www.arktis.de/media/image/thumbnail/iphone-6-huelle-transparent_800x800.jpg">    
+			      <h2>iPhone 6s</h2>   
+			      <p>Price <strong>$ 50</strong></p>    
+				  <button class="button button-small button-assertive"  ng-click="buyNow()">    
+					  <i class="icon ion-ios-bolt energized"></i> Instant Buy   
+				  </button>   
+			</ion-item>   
+		</ion-list>   
+	</ion-content>  
+</ion-view>   
+
 ```
 
 ### Expense Manager with Pouch DB (Offline Data & Sync Example)

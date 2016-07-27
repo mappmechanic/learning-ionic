@@ -31,6 +31,12 @@ angular.module('examples')
 			descr:'It contains an example of noting down expenses using PouchDB.',
 			icon:'ion-social-usd',
 			link:'tab.expenses'
+		},
+		{
+			name:'Paypal Integration',
+			descr:'It contains an example of integrating with paypal to process a payment.',
+			icon:'ion-bag',
+			link:'tab.paypal'
 		}
 	]
 }]);
